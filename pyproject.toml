@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "graphql-fastapi"
+version = "0.1.0"
+description = ""
+authors = ["tatsuki.onoda <tatsuki.onoda@arsaga.jp>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.111.1"
+gunicorn = "^22.0.0"
+pydantic = "^2.8.2"
+pydantic-settings = "^2.3.4"
+alembic = "^1.13.2"
+sqlalchemy = "^2.0.31"
+strawberry-graphql = "^0.236.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+isort = "^5.13.2"
+flake8 = "^7.1.0"
+pyright = "^1.1.372"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

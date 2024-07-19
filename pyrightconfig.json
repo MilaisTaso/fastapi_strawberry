@@ -1,0 +1,18 @@
+{
+    "typeCheckingMode": "basic",
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "**/__pycache__",
+    ],
+    "ignore": [
+        "src/core/settings/logs/logger_config.yml"
+    ],
+    "verboseOutput": true,
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": false,
+    "pythonVersion": "3.11",
+    "pythonPlatform": "Linux",
+    "reportUnknownVariableType": "none"
+}
