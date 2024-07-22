@@ -14,7 +14,7 @@ class AppSettings(BaseSettings):
     BASE_URL: str = Field(default="http://localhost:8000")
     API_ROOT_PATH: str = Field(default="/api")
     CLIENT_URL: str = Field(default="http://localhost:3000")
-    LOG_CONFIG_PATH: str = Field(default="src/settings/logs/logger_config.yml")
+    LOG_CONFIG_PATH: str = Field(default="src/core//settings/logs/logger_config.yml")
 
     # データベース接続情報
     DB_HOST: str = Field(default="db")

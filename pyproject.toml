@@ -14,6 +14,8 @@ pydantic-settings = "^2.3.4"
 alembic = "^1.13.2"
 sqlalchemy = "^2.0.31"
 strawberry-graphql = "^0.236.0"
+python-json-logger = "^2.0.7"
+asyncpg = "^0.29.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -36,14 +36,6 @@ except Exception as err:
 
 # @provider
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    async_scoped_sessionはスレッドローカルではない
-    そのため、scope_func（コールバック）にセッションのIDを返すことで、
-    どのスレッド（スコープ）で実行するか指定する必要がある
-    current_task()はasyncioの機能で現在のタスク自身のIDを返す
-    それによりスレッドローカルと同じ接続ができるようになる
-    """
-
     async with async_session_factory() as session:
         if async_session_factory is None:
             raise RuntimeError("AsyncScopedSession is not initialized")

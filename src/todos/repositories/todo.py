@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.repositories.bases import DatabaseRepository
-from src.todos.graphql.schemas import CreateTodo, UpdateTodo
 from src.todos.models.todo import Todo
+from src.todos.schemas.todo import CreateTodo, UpdateTodo
 
 
 class TodoRepository(DatabaseRepository[Todo, CreateTodo, UpdateTodo]):

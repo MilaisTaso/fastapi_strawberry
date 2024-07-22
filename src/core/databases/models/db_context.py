@@ -27,7 +27,7 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=name_convention)
 
 
-class BaseContext(Base):
+class DBContext(Base):
     """これを継承してモデルを作成すること"""
 
     # 抽象ベースクラスであることの宣言
@@ -51,7 +51,7 @@ class BaseContext(Base):
     )
 
 
-class BaseContextWithDeletedAt(BaseContext):
+class BaseContextWithDeletedAt(DBContext):
     "論理削除対応のBaseContext"
 
     __abstract__ = True

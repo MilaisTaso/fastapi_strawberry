@@ -9,12 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty
 
-from src.core.databases.models.db_context import BaseContext
-from src.core.schemas.base import BaseSchema
+from src.core.databases.models.db_context import DBContext
+from src.core.schemas.pydantic import BasePydanticSchema
 
-ModelType = TypeVar("ModelType", bound=BaseContext)
-CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseSchema)
-UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseSchema)
+ModelType = TypeVar("ModelType", bound=DBContext)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=BasePydanticSchema)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BasePydanticSchema)
 
 
 class DatabaseRepository(

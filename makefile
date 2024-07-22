@@ -1,5 +1,6 @@
 RUN_CONTEXT ?= docker compose exec app
 TARGET ?= src
+APP_NAME ?= graphql_fastapi
 
 up: #起動
 	docker compose up -d
@@ -39,6 +40,9 @@ migrate: # マイグレーションの実行
 
 seed: #初期データの挿入
 	${RUN_CONTEXT} poetry run python src/databases/seeders/seed.py
+
+rm-vol:
+	docker volume rm ${APP_NAME}_${volume}
 
 # 詳細-------------------------------------
 lint-mypy:

@@ -16,9 +16,9 @@ class Query:
         todo_repo = info.context.repository
         todos = await todo_repo.get_list_context()
 
-        return [TodoType.model_validate(todo) for todo in todos]
+        return [TodoType.from_model(todo) for todo in todos]
 
-    @strawberry.field
+    @strawberry.field(name="todo")
     async def get_todo_by_id(
         self, info: Info[AppContext[TodoRepository]], id: uuid.UUID
     ) -> TodoType:
@@ -26,4 +26,4 @@ class Query:
         todo = await todo_repo.get_context_by_id(id)
         if todo is None:
             raise ValueError("Todo not found")
-        return TodoType.model_validate(todo)
+        return TodoType.from_model(todo)
