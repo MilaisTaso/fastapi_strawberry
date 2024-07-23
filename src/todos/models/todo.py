@@ -2,7 +2,7 @@ from sqlalchemy import Enum, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.databases.models.db_context import DBContext
-from src.todos.enums.todo_status import TodoStatus
+from src.todos.enums.todo import TodoStatus
 
 
 class Todo(DBContext):

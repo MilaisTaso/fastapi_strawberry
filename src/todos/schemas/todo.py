@@ -3,7 +3,8 @@ import uuid
 from pydantic import Field, field_validator
 
 from src.core.schemas.pydantic.base import BasePydanticSchema
-from src.todos.enums.todo_status import TodoStatus
+from src.core.schemas.pydantic.paginate import SortQuery
+from src.todos.enums.todo import TodoSortField, TodoStatus
 
 
 class BaseTodo(BasePydanticSchema):
@@ -29,3 +30,7 @@ class UpdateTodo(BaseTodo):
 
         assert len(value) > 1, "Titles must be at least two characters long."
         assert len(value) <= 100, "Title must be less than 100 characters."
+
+
+class TodoSortQuery(SortQuery):
+    field: TodoSortField = Field(default=TodoSortField.TITLE)
