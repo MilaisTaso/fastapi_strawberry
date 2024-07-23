@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Makefile の format コマンドを実行
+if ! make format; then
+  echo "Formatting failed, pre-commit hook aborting commit."
+  exit 1
+fi
+
+# Makefile の lint コマンドを実行
+if ! make lint; then
+  echo "Linting failed, pre-commit hook aborting commit."
+  exit 1
+fi
+
+# 変更された Python ファイルをステージングに追加
+git diff --cached --name-only --diff-filter=d | grep '\.py$' | xargs git add
+
+exit 0

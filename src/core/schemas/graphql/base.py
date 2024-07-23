@@ -1,11 +1,9 @@
 from abc import ABCMeta
-from typing import Generic, TypeVar, get_type_hints
+from typing import Generic, get_type_hints
 
 from sqlalchemy.inspection import inspect
 
-from src.core.databases.models.db_context import Base
-
-ModelType = TypeVar("ModelType", bound=Base)
+from src.core.repositories.bases import ModelType
 
 
 class BaseGraphSchema(Generic[ModelType], metaclass=ABCMeta):

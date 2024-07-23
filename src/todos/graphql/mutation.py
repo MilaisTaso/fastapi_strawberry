@@ -7,7 +7,6 @@ from src.errors.messages.error_message import ErrorMessage
 from src.todos.graphql.schemas import CreateTodoInput, UpdateTodoInput
 from src.todos.graphql.types import TodoType
 from src.todos.repositories.todo import TodoRepository
-from src.todos.schemas.todo import CreateTodo, UpdateTodo
 
 
 @strawberry.type
@@ -17,8 +16,7 @@ class Mutation:
         self, schema: CreateTodoInput, info: Info[AppContext[TodoRepository]]
     ) -> TodoType:
         todo_repo = info.context.repository
-        todo = CreateTodo(title=schema.title, description=schema.description)
-        new_todo = await todo_repo.create(data=CreateTodo.from_strawberry(schema))
+        new_todo = await todo_repo.create(data=schema.to_pydantic())
 
         return TodoType.from_model(new_todo)
 
@@ -27,10 +25,12 @@ class Mutation:
         self, schema: UpdateTodoInput, info: Info[AppContext[TodoRepository]]
     ) -> TodoType:
         todo_repo = info.context.repository
-        todo = await todo_repo.get_context_by_id(schema.id)
-        update_todo = UpdateTodo(id=schema.id, title=schema.title, status=schema.status)
+        instance = schema.to_pydantic()
+
+        todo = await todo_repo.get_context_by_id(instance.id)
         if todo is None:
             raise AppException(error=ErrorMessage.NOT_FOUND("Todo"))
-        updated_todo = await todo_repo.update(context=todo, data=update_todo)
+
+        updated_todo = await todo_repo.update(context=todo, data=instance)
 
         return TodoType.from_model(updated_todo)

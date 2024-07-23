@@ -2,7 +2,7 @@ import uuid
 
 from pydantic import Field, field_validator
 
-from src.core.schemas.pydantic import BasePydanticSchema
+from src.core.schemas.pydantic.base import BasePydanticSchema
 from src.todos.enums.todo_status import TodoStatus
 
 
