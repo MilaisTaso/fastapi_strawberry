@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Type
+from typing import List
 from uuid import UUID
 
 import strawberry
@@ -16,7 +16,7 @@ class TodoType(BaseGraphSchema[Todo]):
     id: UUID
     title: str
     description: str | None
-    status: Type[TodoStatus] = strawberry.enum(TodoStatus, name="Status")
+    status: TodoStatus
     updated_at: datetime
 
 
@@ -27,7 +27,7 @@ class PagedTodoType:
 
     @classmethod
     def from_model(cls, todos: List[Todo], page_meta: PageMeta):
-        metadata = PageMetaType.from_pydantic(page_meta)
         todo_list = [TodoType.from_model(todo) for todo in todos]
+        metadata = PageMetaType.from_pydantic(page_meta)
 
         return cls(items=todo_list, metadata=metadata)

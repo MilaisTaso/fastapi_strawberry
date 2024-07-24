@@ -5,9 +5,11 @@ from strawberry.types import Info
 
 from src.core.dependeny import AppContext
 from src.core.schemas.graphql.pages.schemas import PageQueryInput
+from src.core.schemas.pydantic.paginate import PageQuery
 from src.todos.graphql.schemas import TodoSortQueryInput
 from src.todos.graphql.types import PagedTodoType, TodoType
 from src.todos.repositories.todo import TodoRepository
+from src.todos.schemas.todo import TodoSortQuery
 
 
 @strawberry.type
@@ -15,16 +17,23 @@ class Query:
     @strawberry.field(name="todos")
     async def get_todos(
         self,
-        page_query: PageQueryInput,
-        sort_query: TodoSortQueryInput,
         info: Info[AppContext[TodoRepository]],
+        page_query: PageQueryInput | None = None,
+        sort_query: TodoSortQueryInput | None = None,
     ) -> PagedTodoType:
         todo_repo = info.context.repository
-        todos, page_mage = await todo_repo.get_paged_context(
-            page_query=page_query.to_pydantic(), sort_query=sort_query.to_pydantic()
+        paged_query = (
+            page_query.to_pydantic() if page_query is not None else PageQuery()
+        )
+        sorted_query = (
+            sort_query.to_pydantic() if sort_query is not None else TodoSortQuery()
         )
 
-        return PagedTodoType.from_model(todos=todos, page_meta=page_mage)
+        todos, page_mage = await todo_repo.get_paged_context(
+            page_query=paged_query, sort_query=sorted_query
+        )
+
+        return PagedTodoType.from_model(todos, page_mage)
 
     @strawberry.field(name="todo")
     async def get_todo_by_id(

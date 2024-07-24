@@ -1,9 +1,6 @@
 import strawberry
 
-from src.core.schemas.enums.sort_direction import SortDirection
 from src.core.schemas.pydantic.paginate import PageMeta
-
-SortDirectionType = strawberry.enum(SortDirection, name="Direction")
 
 
 @strawberry.experimental.pydantic.type(model=PageMeta)
