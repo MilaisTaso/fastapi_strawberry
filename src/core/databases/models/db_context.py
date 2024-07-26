@@ -36,7 +36,7 @@ class DBContext(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID,
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid.uuid4(),
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -51,7 +51,7 @@ class DBContext(Base):
     )
 
 
-class BaseContextWithDeletedAt(DBContext):
+class DBContextWithDeletedAt(DBContext):
     "論理削除対応のBaseContext"
 
     __abstract__ = True
@@ -77,7 +77,7 @@ def _add_filter_deleted_at(execute_state: Any) -> None:
     ):
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(
-                BaseContextWithDeletedAt,
+                DBContextWithDeletedAt,
                 lambda cls: cls.deleted_at.is_(None),
                 include_aliases=True,
             ),
