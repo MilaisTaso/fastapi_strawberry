@@ -3,6 +3,7 @@ name = "graphql-fastapi"
 version = "0.1.0"
 description = ""
 authors = ["tatsuki.onoda <tatsuki.onoda@arsaga.jp>"]
+package-mode = false
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -20,6 +21,7 @@ python-multipart = "^0.0.9"
 python-jose = "^3.3.0"
 bcrypt = "^4.2.0"
 email-validator = "^2.2.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 
 
 [tool.poetry.group.dev.dependencies]

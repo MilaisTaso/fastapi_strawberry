@@ -1,7 +1,7 @@
 import re
 import uuid
 
-from pydantic import EmailStr, Field, SecretStr, field_validator
+from pydantic import EmailStr, Field, SecretStr, field_serializer, field_validator
 
 from src.core.schemas.pydantic.base import BasePydanticSchema
 
@@ -12,6 +12,10 @@ class BaseUser(BasePydanticSchema):
     nick_name: str
     email: EmailStr  # 別途ライブラリが必要だが、勝手にバリデーションしてくれる
     password: SecretStr
+
+    @field_serializer("password")
+    def dump_by_secret(self, value: SecretStr) -> str:
+        return value.get_secret_value()
 
     @field_validator("password", mode="before")
     @classmethod

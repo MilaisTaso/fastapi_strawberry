@@ -23,6 +23,10 @@ class AppSettings(BaseSettings):
     DB_PORT: str = Field(default="5432")
     DB_NAME: str
 
+    # 認証・トークン関係
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    TOKEN_SECRET: str
+
     @property
     def DATABASE_URL(self) -> str:
         """
