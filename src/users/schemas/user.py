@@ -3,6 +3,7 @@ import uuid
 
 from pydantic import EmailStr, Field, SecretStr, field_serializer, field_validator
 
+from src.auth.libraries.token import hashed_convert
 from src.core.schemas.pydantic.base import BasePydanticSchema
 
 
@@ -15,7 +16,7 @@ class BaseUser(BasePydanticSchema):
 
     @field_serializer("password")
     def dump_by_secret(self, value: SecretStr) -> str:
-        return value.get_secret_value()
+        return hashed_convert(value.get_secret_value())
 
     @field_validator("password", mode="before")
     @classmethod
@@ -55,10 +56,6 @@ class BaseUser(BasePydanticSchema):
             *args,
             **kwargs,
         )
-
-
-class CreateUser(BaseUser):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
 
 class UpdateUser(BaseUser):

@@ -3,9 +3,11 @@ import uuid
 import strawberry
 from strawberry.types import Info
 
-from src.core.dependeny import AppContext
+from src.core.dependencies import AppContext
 from src.core.schemas.graphql.pages.schemas import PageQueryInput
 from src.core.schemas.pydantic.paginate import PageQuery
+from src.errors.exception import AppException
+from src.errors.messages.error_message import ErrorMessage
 from src.todos.graphql.schemas import TodoSortQueryInput
 from src.todos.graphql.types import PagedTodoType, TodoType
 from src.todos.repositories.todo import TodoRepository
@@ -13,7 +15,7 @@ from src.todos.schemas.todo import TodoSortQuery
 
 
 @strawberry.type
-class Query:
+class TodoQuery:
     @strawberry.field(name="todos")
     async def get_todos(
         self,
@@ -41,6 +43,8 @@ class Query:
     ) -> TodoType:
         todo_repo: TodoRepository = info.context.repository
         todo = await todo_repo.get_context_by_id(id)
+
         if todo is None:
-            raise ValueError("Todo not found")
+            raise AppException(error=ErrorMessage.NOT_FOUND("TODO"))
+
         return TodoType.from_model(todo)

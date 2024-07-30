@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any, Dict, Type
 
 from fastapi import HTTPException, status
 
@@ -8,12 +8,14 @@ from src.errors.messages.base import BaseMessage
 class AppException(HTTPException):
     """API例外"""
 
-    default_status_code = status.HTTP_400_BAD_REQUEST
+    id: str
+    message: str
+    detail: str
 
     def __init__(
         self,
         error: Type[BaseMessage] | BaseMessage,
-        headers: dict[str, Any] | None = None,
+        headers: Dict[str, Any] | None = None,
         detail: Any | None = None,
     ) -> None:
         if isinstance(error, type) and issubclass(error, BaseMessage):
@@ -34,5 +36,5 @@ class AppException(HTTPException):
             detail = error_obj.detail
 
         super().__init__(
-            status_code=error_obj.status_code, detail=detail, headers=headers
+            status_code=status.HTTP_200_OK, detail=self.message, headers=headers
         )

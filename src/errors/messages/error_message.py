@@ -8,8 +8,9 @@ class ErrorMessage:
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         message = "システムエラーが発生しました、管理者に問い合わせてください"
 
-    class FAILURE_LOGIN(BaseMessage):
-        message = "ログインが失敗しました"
+    class CouldNotValidateCredentials(BaseMessage):
+        status_code = status.HTTP_403_FORBIDDEN
+        text = "ユーザー認証に失敗しました"
 
     class OBJECT_INITIALIZE_FAILED(BaseMessage):
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -38,5 +39,10 @@ class ErrorMessage:
         status_code = status.HTTP_403_FORBIDDEN
         message = "ユーザー認証に失敗しました"
 
-    class S3_OBJECT_CAN_NOT_OPERATE(BaseMessage):
-        message = "S3の{}操作に失敗しました"
+    class ENTITY_ALREADY_EXISTS(BaseMessage):
+        status_code = status.HTTP_400_BAD_REQUEST
+        message = "{}はすでに存在しています"
+
+    class WRONG_PASSWORD(BaseMessage):
+        status_code = status.HTTP_400_BAD_REQUEST
+        message = "パスワードが違います"

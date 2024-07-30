@@ -1,10 +1,10 @@
 import math
 from abc import ABCMeta
 from datetime import datetime
-from typing import Generic, List, TypeVar
+from typing import Generic, List, TypeVar, Union
 from uuid import UUID
 
-from sqlalchemy import BinaryExpression, delete, func, select, update
+from sqlalchemy import ColumnElement, delete, func, select, update
 from sqlalchemy.exc import StatementError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.inspection import inspect
@@ -22,7 +22,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BasePydanticSchema)
 class DatabaseRepository(
     Generic[ModelType, CreateSchemaType, UpdateSchemaType], metaclass=ABCMeta
 ):
-    execute_columns = ["created_at", "updated_at", "deleted_at"]
+    exclude_columns = ["created_at", "updated_at", "deleted_at"]
 
     def __init__(self, model: type[ModelType], session: AsyncSession) -> None:
         self.model = model
@@ -34,7 +34,7 @@ class DatabaseRepository(
         select_columns = [
             attr
             for attr in mapper.attrs
-            if isinstance(attr, ColumnProperty) and attr not in self.execute_columns
+            if isinstance(attr, ColumnProperty) and attr not in self.exclude_columns
         ]
 
         return select_columns
@@ -75,7 +75,7 @@ class DatabaseRepository(
 
         return context
 
-    async def get_context_by_id(self, id: UUID) -> ModelType | None:
+    async def get_context_by_id(self, id: Union[UUID, str, int]) -> ModelType | None:
         # get()は主キーに基づいたインスタンスを返す
         return await self.session.get(self.model, id)
 
@@ -101,7 +101,7 @@ class DatabaseRepository(
 
         return None
 
-    async def get_context(self, *expressions: BinaryExpression) -> ModelType | None:
+    async def get_context(self, *expressions: ColumnElement[bool]) -> ModelType | None:
         select_columns = self._filtered_select_columns()
         if not expressions:
             return None
@@ -111,7 +111,7 @@ class DatabaseRepository(
 
     async def get_list_context(
         self,
-        *expressions: BinaryExpression,
+        *expressions: ColumnElement[bool],
     ) -> list[ModelType]:
         select_columns = self._filtered_select_columns()
         query = select(self.model, *select_columns)
@@ -125,7 +125,7 @@ class DatabaseRepository(
         self,
         page_query: PageQuery,
         sort_query: SortQuery,
-        *expressions: BinaryExpression,
+        *expressions: ColumnElement[bool],
     ):
         select_columns = self._filtered_select_columns()
 

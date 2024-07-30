@@ -1,7 +1,7 @@
 import strawberry
 from strawberry.types import Info
 
-from src.core.dependeny import AppContext
+from src.core.dependencies import AppContext
 from src.errors.exception import AppException
 from src.errors.messages.error_message import ErrorMessage
 from src.todos.graphql.schemas import CreateTodoInput, UpdateTodoInput
@@ -10,7 +10,7 @@ from src.todos.repositories.todo import TodoRepository
 
 
 @strawberry.type
-class Mutation:
+class TodoMutation:
     @strawberry.mutation
     async def create_todo(
         self, schema: CreateTodoInput, info: Info[AppContext[TodoRepository]]

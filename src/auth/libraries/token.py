@@ -4,6 +4,7 @@ from typing import Any
 from jose import jwt
 from passlib.context import CryptContext
 
+from src.auth.schemas.token import TokenPayload
 from src.core.settings.config import settings
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -29,7 +30,7 @@ def hashed_convert(string: str) -> str:
 def create_access_token(
     subject: str | Any,
     expires_delta: timedelta | None = None,
-) -> str:
+) -> TokenPayload:
     if expires_delta:
         expire = datetime.now(tz=timezone.utc) + expires_delta
     else:
@@ -41,4 +42,4 @@ def create_access_token(
     to_encode = {"exp": expire, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, settings.TOKEN_SECRET, algorithm=ALGORITHM)
 
-    return encoded_jwt
+    return TokenPayload(sub=encoded_jwt)

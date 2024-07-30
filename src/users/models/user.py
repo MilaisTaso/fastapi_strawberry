@@ -12,4 +12,4 @@ class User(DBContextWithDeletedAt):
     nick_name: Mapped[str] = mapped_column(String(40))
 
     email: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
-    hashed_password: Mapped[str] = mapped_column(Text, nullable=False)
+    password: Mapped[str] = mapped_column(Text, nullable=False)
