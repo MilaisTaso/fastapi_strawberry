@@ -1,10 +1,9 @@
 import strawberry
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 
 from src.auth.api import auth
-from src.auth.libraries.authenticate import get_current_user
 from src.core.dependencies import get_context
 from src.core.settings.config import settings
 from src.todos.graphql.mutation import TodoMutation
@@ -36,9 +35,7 @@ app.add_middleware(
 )
 
 schemas = strawberry.Schema(query=Query, mutation=Mutation)
-graphql_app = GraphQLRouter(
-    schemas, context_getter=get_context, dependencies=Depends(get_current_user)
-)
+graphql_app = GraphQLRouter(schemas, context_getter=get_context)
 
 app.include_router(router=auth.router, prefix="")
 app.include_router(graphql_app, prefix="/graphql", tags=["GraphQL"])

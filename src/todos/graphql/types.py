@@ -22,12 +22,12 @@ class TodoType(BaseGraphSchema[Todo]):
 
 @strawberry.type(name="Todos")
 class PagedTodoType:
-    items: List[TodoType]
+    items: List[TodoType] = strawberry.field(default_factory=list)
     metadata: PageMetaType
 
     @classmethod
     def from_model(cls, todos: List[Todo], page_meta: PageMeta):
-        todo_list = [TodoType.from_model(todo) for todo in todos]
+        todo_list = [TodoType.from_model(todo) for todo in todos] if todos else []
         metadata = PageMetaType.from_pydantic(page_meta)
 
         return cls(items=todo_list, metadata=metadata)

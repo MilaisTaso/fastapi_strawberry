@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src.auth.libraries.dependencies import get_repository
 from src.auth.libraries.token import create_access_token, verify_password
 from src.auth.schemas.users import LoginUserResponse, SignUpUser, UserResponse
+from src.core.repositories.dependencies import get_repository
 from src.core.settings.logs.logger import get_logger
 from src.errors.exception import AppException
 from src.errors.messages.error_message import ErrorMessage
@@ -25,11 +25,16 @@ async def signup(user_repo: DependsUser, request: SignUpUser = Body()):
         raise AppException(error=ErrorMessage.ENTITY_ALREADY_EXISTS("USER"))
 
     new_user = await user_repo.create(data=request)
+    user = UserResponse(
+        first_name=new_user.first_name,
+        last_name=new_user.last_name,
+        nick_name=new_user.nick_name,
+        email=new_user.email,
+    )
+
     access_token = create_access_token(new_user.id)
 
-    return LoginUserResponse(
-        user=UserResponse.model_validate(new_user), token=access_token
-    )
+    return LoginUserResponse(user=user, token=access_token)
 
 
 @router.post("/login")
@@ -41,8 +46,13 @@ async def login(user_repo: DependsUser, form: OAuth2PasswordRequestForm = Depend
     if not verify_password(form.password, exist_user.password):
         raise AppException(error=ErrorMessage.WRONG_PASSWORD)
 
+    user = UserResponse(
+        first_name=exist_user.first_name,
+        last_name=exist_user.last_name,
+        nick_name=exist_user.nick_name,
+        email=exist_user.email,
+    )
+
     access_token = create_access_token(exist_user.id)
 
-    return LoginUserResponse(
-        user=UserResponse.model_validate(exist_user), token=access_token
-    )
+    return LoginUserResponse(user=user, token=access_token)

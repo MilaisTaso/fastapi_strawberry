@@ -7,7 +7,7 @@ from src.core.databases.models.db_context import DBContextWithDeletedAt
 class User(DBContextWithDeletedAt):
     __tablename__ = "users"
 
-    fast_name: Mapped[str] = mapped_column(String(20))
+    first_name: Mapped[str] = mapped_column(String(20))
     last_name: Mapped[str] = mapped_column(String(20))
     nick_name: Mapped[str] = mapped_column(String(40))
 

@@ -1,7 +1,15 @@
 import re
 import uuid
+from typing import Any, Dict
 
-from pydantic import EmailStr, Field, SecretStr, field_serializer, field_validator
+from pydantic import (
+    EmailStr,
+    Field,
+    SecretStr,
+    field_serializer,
+    field_validator,
+    model_validator,
+)
 
 from src.auth.libraries.token import hashed_convert
 from src.core.schemas.pydantic.base import BasePydanticSchema
@@ -23,39 +31,40 @@ class BaseUser(BasePydanticSchema):
     def check_password(cls, value: str) -> SecretStr:
         assert len(value) >= 8, "Password must be at least 8 characters long"
         assert (
-            re.search(r"[A-Z]", value) is None
+            re.search(r"[A-Z]", value) is not None
         ), "Password must contain at least one uppercase letter'"
         assert (
-            re.search(r"[a-z]", value) is None
+            re.search(r"[a-z]", value) is not None
         ), "Password must contain at least one lowercase letter"
         assert (
-            re.search(r'[!@#$%^&*(),.?":{}|<>]', value) is None
+            re.search(r'[!@#$%^&*(),.?":{}|<>]', value) is not None
         ), "Password must contain at least one special character"
 
         return SecretStr(value)
 
-    def __init__(
-        self,
-        first_name: str,
-        last_name: str,
-        email: str,
-        password: str,
-        nick_name: str | None = None,
-        *args,
-        **kwargs,
-    ):
-        if nick_name is None:
-            nick_name = f"{first_name} {last_name}"
+    @model_validator(mode="before")
+    @classmethod
+    def get_nick_name(cls, values: Dict[str, Any]):
+        first_name = values.get("first_name") or values.get("firstName")
+        print(f"性: {first_name}")
+        last_name = values.get("last_name") or values.get("lastName")
+        print(f"名: {last_name}")
+        nickname = values.get("nickName") or values.get("nick_name")
 
-        super().__init__(
-            first_name=first_name,
-            last_name=last_name,
-            nick_name=nick_name,
-            email=email,
-            password=password,
-            *args,
-            **kwargs,
-        )
+        assert (
+            first_name is not None and last_name is not None
+        ), "first name and last name are requeued"
+
+        if nickname is None:
+            nickname = f"{first_name} {last_name}"
+            values["nick_name"] = nickname
+            if "nickName" in values:
+                values.pop("nickName")
+
+        return values
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class UpdateUser(BaseUser):

@@ -8,10 +8,6 @@ class ErrorMessage:
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         message = "システムエラーが発生しました、管理者に問い合わせてください"
 
-    class CouldNotValidateCredentials(BaseMessage):
-        status_code = status.HTTP_403_FORBIDDEN
-        text = "ユーザー認証に失敗しました"
-
     class OBJECT_INITIALIZE_FAILED(BaseMessage):
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         message = "{}の初期化に失敗しました。"

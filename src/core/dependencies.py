@@ -1,29 +1,35 @@
-from typing import Generic, TypeVar
-
 from fastapi import Depends, Request
-from sqlalchemy.ext.asyncio import AsyncSession
 from strawberry.fastapi import BaseContext
 
-from src.core.repositories.bases import DatabaseRepository
-from src.core.settings.database import get_db_session
+from src.auth.libraries.authenticate import get_current_user
+from src.core.repositories.dependencies import get_repository
 from src.todos.repositories.todo import TodoRepository
+from src.users.models.user import User
 from src.users.repositories.user import UserRepository
 
-Repository = TypeVar("Repository", bound=DatabaseRepository)
 
-
-class AppContext(BaseContext, Generic[Repository]):
-    def __init__(self, repository: Repository) -> None:
-        self.repository = repository
+class AppContext(BaseContext):
+    def __init__(
+        self,
+        todo_repo: TodoRepository,
+        user_repo: UserRepository,
+        user: User | None = None,
+    ) -> None:
+        self.todo_repo = todo_repo
+        self.user_repo = user_repo
+        self.user = user
 
 
 async def get_context(
     request: Request,
-    session: AsyncSession = Depends(get_db_session),
+    todo_repo: TodoRepository = Depends(get_repository(TodoRepository)),
+    user_repo: UserRepository = Depends(get_repository(UserRepository)),
 ):
-    if "todo" in request.url.path:
-        repository = TodoRepository(session=session)
+    auth_header = request.headers.get("Authorization")
+    if auth_header is not None:
+        token = auth_header.split(" ")[1] if " " in auth_header else auth_header
+        user = await get_current_user(token=token, user_repo=user_repo)
     else:
-        repository = UserRepository(session=session)
+        user = None
 
-    return AppContext(repository=repository)
+    return AppContext(todo_repo=todo_repo, user_repo=user_repo, user=user)

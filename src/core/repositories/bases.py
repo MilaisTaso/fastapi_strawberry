@@ -43,6 +43,7 @@ class DatabaseRepository(
         self, data: CreateSchemaType, execute_none: bool = True
     ) -> ModelType:
         data_dict = data.model_dump(exclude_none=execute_none)
+        print(f"pydantic モデル: {data_dict}")
         context = self.model(**data_dict)
 
         self.session.add(context)
