@@ -44,9 +44,6 @@ class TodoQuery:
     @strawberry.field(name="todo")
     @auth_required
     async def get_todo_by_id(self, info: Info[AppContext], id: uuid.UUID) -> TodoType:
-        if info.context.user is None:
-            raise AppException(error=ErrorMessage.AUTHENTICATION_FAILED)
-
         todo_repo = info.context.todo_repo
         todo = await todo_repo.get_context_by_id(id)
 

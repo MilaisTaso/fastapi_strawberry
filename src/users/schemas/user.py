@@ -70,3 +70,7 @@ class BaseUser(BasePydanticSchema):
 class UpdateUser(BaseUser):
     id: uuid.UUID
     nick_name: str = Field(min_length=2, max_length=20)
+
+
+class DeleteUser(BasePydanticSchema):
+    id: uuid.UUID

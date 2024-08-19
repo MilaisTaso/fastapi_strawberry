@@ -4,7 +4,7 @@ import strawberry
 
 from src.core.schemas.enums.sort_direction import SortDirection
 from src.todos.enums.todo import TodoSortField, TodoStatus
-from src.todos.schemas.todo import CreateTodo, TodoSortQuery, UpdateTodo
+from src.todos.schemas.todo import CreateTodo, DeleteTodo, TodoSortQuery, UpdateTodo
 
 
 @strawberry.experimental.pydantic.input(model=CreateTodo)
@@ -19,6 +19,11 @@ class UpdateTodoInput:
     title: str | None = None
     description: str | None = None
     status: TodoStatus  # type: ignore
+
+
+@strawberry.experimental.pydantic.input(model=DeleteTodo)
+class DeleteTodoInput:
+    id: UUID
 
 
 @strawberry.experimental.pydantic.input(model=TodoSortQuery)

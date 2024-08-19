@@ -32,5 +32,9 @@ class UpdateTodo(BaseTodo):
         assert len(value) <= 100, "Title must be less than 100 characters."
 
 
+class DeleteTodo(BasePydanticSchema):
+    id: uuid.UUID
+
+
 class TodoSortQuery(SortQuery):
     field: TodoSortField = Field(default=TodoSortField.TITLE)
