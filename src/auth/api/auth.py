@@ -26,8 +26,6 @@ async def signup(user_repo: DependsUser, request: SignUpUser = Body()):
 
     new_user = await user_repo.create(data=request)
     user = UserResponse(
-        first_name=new_user.first_name,
-        last_name=new_user.last_name,
         nick_name=new_user.nick_name,
         email=new_user.email,
     )
@@ -47,8 +45,6 @@ async def login(user_repo: DependsUser, form: OAuth2PasswordRequestForm = Depend
         raise AppException(error=ErrorMessage.WRONG_PASSWORD)
 
     user = UserResponse(
-        first_name=exist_user.first_name,
-        last_name=exist_user.last_name,
         nick_name=exist_user.nick_name,
         email=exist_user.email,
     )

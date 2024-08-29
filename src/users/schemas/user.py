@@ -1,4 +1,3 @@
-import re
 import uuid
 from typing import Any, Dict
 
@@ -16,9 +15,7 @@ from src.core.schemas.pydantic.base import BasePydanticSchema
 
 
 class BaseUser(BasePydanticSchema):
-    first_name: str = Field(min_length=1, max_length=10)
-    last_name: str = Field(min_length=1, max_length=10)
-    nick_name: str
+    nick_name: str = Field(min_length=1, max_length=12)
     email: EmailStr  # 別途ライブラリが必要だが、勝手にバリデーションしてくれる
     password: SecretStr
 
@@ -41,27 +38,6 @@ class BaseUser(BasePydanticSchema):
         ), "Password must contain at least one special character"
 
         return SecretStr(value)
-
-    @model_validator(mode="before")
-    @classmethod
-    def get_nick_name(cls, values: Dict[str, Any]):
-        first_name = values.get("first_name") or values.get("firstName")
-        print(f"性: {first_name}")
-        last_name = values.get("last_name") or values.get("lastName")
-        print(f"名: {last_name}")
-        nickname = values.get("nickName") or values.get("nick_name")
-
-        assert (
-            first_name is not None and last_name is not None
-        ), "first name and last name are requeued"
-
-        if nickname is None:
-            nickname = f"{first_name} {last_name}"
-            values["nick_name"] = nickname
-            if "nickName" in values:
-                values.pop("nickName")
-
-        return values
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

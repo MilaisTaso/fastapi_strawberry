@@ -9,8 +9,6 @@ class SignUpUser(BaseUser):
 
 
 class UserResponse(BasePydanticSchema):
-    first_name: str
-    last_name: str
     nick_name: str
     email: str
 

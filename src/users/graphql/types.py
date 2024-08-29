@@ -9,8 +9,6 @@ from src.users.models.user import User
 @strawberry.type(name="User")
 class UserType(BaseGraphSchema[User]):
     id: UUID
-    first_name: str
-    last_name: str
     nick_name: str
     email: str
 
