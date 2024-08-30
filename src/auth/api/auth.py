@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.auth.libraries.token import create_access_token, verify_password
-from src.auth.schemas.users import LoginUserResponse, SignUpUser, UserResponse
+from src.auth.schemas.users import LoginUserResponse, SignUpUser, UserResponse, LoginUser
 from src.core.repositories.dependencies import get_repository
 from src.core.settings.logs.logger import get_logger
 from src.errors.exception import AppException
@@ -36,7 +36,8 @@ async def signup(user_repo: DependsUser, request: SignUpUser = Body()):
 
 
 @router.post("/login")
-async def login(user_repo: DependsUser, form: OAuth2PasswordRequestForm = Depends()):
+async def login(user_repo: DependsUser, form: LoginUser = Body()):
+    logger.info(f"ログイン リクエスト: {form}")
     exist_user = await user_repo.get_context(User.email == form.username)
     if exist_user is None:
         raise AppException(error=ErrorMessage.NOT_FOUND("USER"))
